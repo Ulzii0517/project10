@@ -71,7 +71,7 @@ app.post("/product", (request, response) => {
 app.delete("/product", (request, response) => {
   const { id } = request.body;
 
-  fs.writeFile("./data/products.json", "utf-8", (readError, data) => {
+  fs.readFile("./data/products.json", "utf-8", (readError, data) => {
     if (readError) {
       response.json({
         success: false,
@@ -82,6 +82,8 @@ app.delete("/product", (request, response) => {
     let dbData = data ? JSON.parse(data) : [];
 
     const filteredData = dbData.filter((data) => data?.id !== id);
+
+    const deletedProduct = dbData.find((data) => data?.id === id);
 
     if (filteredData.length === dbData.length) {
       response.json({
@@ -102,7 +104,7 @@ app.delete("/product", (request, response) => {
         } else {
           response.json({
             success: true,
-            products: filteredData,
+            product: deletedProduct,
           });
         }
       }
